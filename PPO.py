@@ -93,6 +93,8 @@ class ActorCritic(nn.Module):
         # state = torch.from_numpy(state).float().to(device)
         if len(state.shape) < 4:
             state = torch.unsqueeze(state, 0)
+        if len(state.shape) > 4:
+            state = torch.squeeze(state,1)
         action_probs = self.action_layer(state)
         dist = Categorical(action_probs)
         action = dist.sample()
@@ -106,6 +108,8 @@ class ActorCritic(nn.Module):
     def evaluate(self, state, action):
         if len(state.shape) < 4:
             state = torch.unsqueeze(state, 0)
+        if len(state.shape) > 4:
+            state = torch.squeeze(state,1)
         action_probs = self.action_layer(state)
         dist = Categorical(action_probs)
         
