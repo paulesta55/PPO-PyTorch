@@ -9,6 +9,18 @@ logging.basicConfig(level=logging.DEBUG)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+def converter(observation):
+    region_size = 8
+    obs = observation['pov']
+    obs = obs / 255
+    H,W,C = obs.shape
+    state = torch.from_numpy(obs).float().to(device)
+    if len(state.shape) < 4:
+            state = torch.unsqueeze(state, 0)
+    state = state.flatten()
+    return state
+
+
 class Memory:
     def __init__(self):
         self.actions = []
@@ -135,7 +147,7 @@ def main():
     from environment import MyEnv
     # creating environment
     env = MyEnv()
-    state_dim = env.observation_space.shape[0]
+    state_dim = 3* 64* 64
     action_dim = 10
     render = False
     solved_reward = 230         # stop training if avg_reward > solved_reward
@@ -167,14 +179,14 @@ def main():
     
     # training loop
     for i_episode in range(1, max_episodes+1):
-        state = env.reset()
+        state = converter(env.reset())
         for t in range(max_timesteps):
             timestep += 1
             
             # Running policy_old:
             action = ppo.policy_old.act(state, memory)
             state, reward, done, _ = env.step(action)
-            
+            state = converter(state)
             # Saving reward and is_terminal:
             memory.rewards.append(reward)
             memory.is_terminals.append(done)
