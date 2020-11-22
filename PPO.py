@@ -60,6 +60,7 @@ class ActorCritic(nn.Module):
             nn.Conv2d(32, 32, kernel_size=5, stride=2),
             nn.BatchNorm2d(32),
             nn.ReLU(),
+            nn.Flatten(),
             nn.Linear(800,action_dim),
             nn.Softmax(dim=-1)
         )
@@ -81,6 +82,7 @@ class ActorCritic(nn.Module):
             nn.Conv2d(32, 32, kernel_size=5, stride=2),
             nn.BatchNorm2d(32),
             nn.ReLU(),
+            nn.Flatten(),
             nn.Linear(800, 1)
         )
 
