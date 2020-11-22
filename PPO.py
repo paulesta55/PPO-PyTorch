@@ -63,7 +63,7 @@ class ActorCritic(nn.Module):
         raise NotImplementedError
         
     def act(self, state, memory):
-        state = torch.from_numpy(state).float().to(device) 
+        # state = torch.from_numpy(state).float().to(device)
         action_probs = self.action_layer(state)
         dist = Categorical(action_probs)
         action = dist.sample()
