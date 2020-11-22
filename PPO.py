@@ -17,7 +17,8 @@ def converter(observation):
     state = torch.from_numpy(obs).float().to(device)
     if len(state.shape) < 4:
             state = torch.unsqueeze(state, 0)
-    state = state.flatten()
+    # state = state.flatten()
+    state = state.reshape((-1,C,H,W))
     return state
 
 
