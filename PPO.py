@@ -41,24 +41,48 @@ class ActorCritic(nn.Module):
         super(ActorCritic, self).__init__()
 
         # actor
+        # self.action_layer = nn.Sequential(
+        #         nn.Linear(state_dim, n_latent_var),
+        #         nn.Tanh(),
+        #         nn.Linear(n_latent_var, n_latent_var),
+        #         nn.Tanh(),
+        #         nn.Linear(n_latent_var, action_dim),
+        #         nn.Softmax(dim=-1)
+        #         )
         self.action_layer = nn.Sequential(
-                nn.Linear(state_dim, n_latent_var),
-                nn.Tanh(),
-                nn.Linear(n_latent_var, n_latent_var),
-                nn.Tanh(),
-                nn.Linear(n_latent_var, action_dim),
-                nn.Softmax(dim=-1)
-                )
-        
+            nn.Conv2d(3, 16, kernel_size=5, stride=2),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.Conv2d(16, 32, kernel_size=5, stride=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=5, stride=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Linear(800,action_dim),
+            nn.Softmax(dim=-1)
+        )
         # critic
+        # self.value_layer = nn.Sequential(
+        #         nn.Linear(state_dim, n_latent_var),
+        #         nn.Tanh(),
+        #         nn.Linear(n_latent_var, n_latent_var),
+        #         nn.Tanh(),
+        #         nn.Linear(n_latent_var, 1)
+        #         )
         self.value_layer = nn.Sequential(
-                nn.Linear(state_dim, n_latent_var),
-                nn.Tanh(),
-                nn.Linear(n_latent_var, n_latent_var),
-                nn.Tanh(),
-                nn.Linear(n_latent_var, 1)
-                )
-        
+            nn.Conv2d(3, 16, kernel_size=5, stride=2),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
+            nn.Conv2d(16, 32, kernel_size=5, stride=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Conv2d(32, 32, kernel_size=5, stride=2),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.Linear(800, 1)
+        )
+
     def forward(self):
         raise NotImplementedError
         
