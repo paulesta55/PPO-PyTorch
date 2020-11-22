@@ -2,6 +2,10 @@ import torch
 import torch.nn as nn
 from torch.distributions import Categorical
 import gym
+import minerl
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -127,11 +131,12 @@ class PPO:
         
 def main():
     ############## Hyperparameters ##############
-    env_name = "LunarLander-v2"
+    env_name = 'MineRLNavigateDense-v0'
+    from environment import MyEnv
     # creating environment
-    env = gym.make(env_name)
+    env = MyEnv()
     state_dim = env.observation_space.shape[0]
-    action_dim = 4
+    action_dim = 10
     render = False
     solved_reward = 230         # stop training if avg_reward > solved_reward
     log_interval = 20           # print avg reward in the interval
