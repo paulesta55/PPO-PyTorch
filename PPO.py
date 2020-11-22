@@ -15,10 +15,10 @@ def converter(observation):
     obs = obs / 255
     H,W,C = obs.shape
     state = torch.from_numpy(obs).float().to(device)
-    if len(state.shape) < 4:
-            state = torch.unsqueeze(state, 0)
+    # if len(state.shape) < 4:
+    #         state = torch.unsqueeze(state, 0)
     # state = state.flatten()
-    state = state.reshape((-1,C,H,W))
+    state = state.reshape((C,H,W))
     return state
 
 
