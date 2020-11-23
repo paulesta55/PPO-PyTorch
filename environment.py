@@ -38,16 +38,16 @@ class MyEnv(gym.Env):
             # forward & jump
             a["forward"] = 1
             a["jump"] = 1
+        # elif a_idx == 6:
+        #     # left
+        #     a["left"] = 1
+        # elif a_idx == 7:
+        #     # right
+        #     a["right"] = 1
+        # elif a_idx == 8:
+        #     # back
+        #     a["back"] = 1
         elif a_idx == 6:
-            # left
-            a["left"] = 1
-        elif a_idx == 7:
-            # right
-            a["right"] = 1
-        elif a_idx == 8:
-            # back
-            a["back"] = 1
-        elif a_idx == 9:
             # jump
             a["jump"] = 1
         return treechop_env.step(a)
