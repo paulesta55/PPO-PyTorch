@@ -14,7 +14,6 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def converter(observation):
     region_size = 8
-    logging.debug(observation)
     obs = observation['pov']
     obs = obs / 255
     H,W,C = obs.shape
