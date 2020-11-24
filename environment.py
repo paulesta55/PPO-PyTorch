@@ -58,5 +58,5 @@ class MyEnv(gym.Env):
     def render(self, mode='human'):
         return self.env.render(mode)
 
-    def close (self):
+    def close(self):
         self.env.close()
