@@ -9,10 +9,11 @@ class MyEnv(gym.Env):
 
     def __init__(self):
         super(MyEnv, self).__init__()
-        self.action_space = spaces.Discrete(10)
-        self.observation_space = treechop_env.observation_space
+        self.action_space = spaces.Discrete(7)
         self.env_name = "MineRLNavigateDense-v0"
         self.env = gym.make(self.env_name)
+        self.observation_space = self.env.observation_space
+
 
     def step(self, a_idx):
         # return treechop_env.step(actions_arr[action])
