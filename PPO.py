@@ -197,7 +197,7 @@ def main():
     state_dim = 3* 64* 64
     action_dim = 10
     render = False
-    solved_reward = 100         # stop training if avg_reward > solved_reward. this is impossible
+    solved_reward = 200         # stop training if avg_reward > solved_reward. this is impossible
     log_interval = 1           # print avg reward in the interval
     max_episodes = 50000        # max training episodes
     max_timesteps = 10000         # max timesteps in one episode
