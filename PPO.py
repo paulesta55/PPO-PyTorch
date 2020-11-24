@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.distributions import Categorical
 import gym
 import minerl
+import numpy as np
 import logging
 from network import ConvNet
 
@@ -206,6 +207,7 @@ def main():
     K_epochs = 4                # update policy for K epochs
     eps_clip = 0.2              # clip parameter for PPO
     random_seed = None
+    save_interval = 5
     #############################################
     
     if random_seed:
@@ -220,9 +222,12 @@ def main():
     running_reward = 0
     avg_length = 0
     timestep = 0
-    
+
+    episode_rewards = []
+
     # training loop
     for i_episode in range(1, max_episodes+1):
+        episode_reward = 0
         obs, compass = converter(env.reset())
         for t in range(max_timesteps):
             timestep += 1
@@ -234,7 +239,7 @@ def main():
             # Saving reward and is_terminal:
             memory.rewards.append(reward)
             memory.is_terminals.append(done)
-            
+            episode_reward += reward
             # update if its time
             if timestep % update_timestep == 0:
                 ppo.update(memory)
@@ -246,9 +251,9 @@ def main():
                 env.render()
             if done:
                 break
-                
+        episode_rewards.append(episode_reward)
         avg_length += t
-        
+
         # stop training if avg_reward > solved_reward
         if running_reward > (log_interval*solved_reward):
             print("########## Solved! ##########")
@@ -259,11 +264,13 @@ def main():
         if i_episode % log_interval == 0:
             avg_length = int(avg_length/log_interval)
             running_reward = int((running_reward/log_interval))
-            
             print('Episode {} \t avg length: {} \t reward: {}'.format(i_episode, avg_length, running_reward))
             running_reward = 0
             avg_length = 0
-            
+
+        if i_episode % save_interval == 0:
+            torch.save(ppo.policy.state_dict(), './PPO_{}.pth'.format(env_name))
+            np.save('./PPO_ep_rewards_{}'.format(env_name),np.array(episode_rewards),)
 if __name__ == '__main__':
     main()
     
