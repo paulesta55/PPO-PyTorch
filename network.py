@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 import torchvision.transforms as T
+import logging
 
 Transition = namedtuple('Transition',
                         ('state', 'action', 'next_state', 'reward'))
@@ -64,6 +65,8 @@ class ConvNet(nn.Module):
         x = F.relu(self.bn3(self.conv3(x)))
         x = x.view(x.size(0), -1)
         if compass is not None:
+            logging.debug(f"compass shape {compass.shape}")
+            logging.debug(f"x shape {x.shape}")
             x = torch.cat((x, compass), 1)
         x = self.head(x)
         if self.is_actor:
