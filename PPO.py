@@ -22,7 +22,7 @@ def converter(observation):
     #         state = torch.unsqueeze(state, 0)
     # state = state.flatten()
     obs = obs.reshape((C,H,W))
-    compass = torch.tensor([observation["compassAngle"]], dtype=torch.float32, device=device)
+    compass = torch.FloatTensor([observation["compassAngle"]]).to(device)
     return obs, compass
 
 
