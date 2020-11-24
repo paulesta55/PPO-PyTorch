@@ -3,8 +3,6 @@ import minerl
 from gym import spaces
 import numpy as np
 
-treechop_env = gym.make("MineRLTreechop-v0")
-
 class MyEnv(gym.Env):
     """Custom Neurocar Environment that follows gym interface"""
     metadata = {'render.modes': ['human']}
@@ -14,10 +12,11 @@ class MyEnv(gym.Env):
         self.action_space = spaces.Discrete(10)
         self.observation_space = treechop_env.observation_space
         self.env_name = "MineRLNavigateDense-v0"
+        self.env = gym.make(self.env_name)
 
     def step(self, a_idx):
         # return treechop_env.step(actions_arr[action])
-        a = treechop_env.action_space.noop()
+        a = self.env.action_space.noop()
         a["attack"] = 1
         if a_idx == 0:
             # pitch + 5
@@ -50,13 +49,13 @@ class MyEnv(gym.Env):
         elif a_idx == 6:
             # jump
             a["jump"] = 1
-        return treechop_env.step(a)
+        return self.env.step(a)
 
     def reset(self):
-        return treechop_env.reset()
+        return self.env.reset()
 
     def render(self, mode='human'):
-        return treechop_env.render(mode)
+        return self.env.render(mode)
 
     def close (self):
-        treechop_env.close()
+        self.env.close()
