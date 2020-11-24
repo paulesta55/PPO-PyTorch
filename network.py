@@ -65,8 +65,8 @@ class ConvNet(nn.Module):
         x = F.relu(self.bn3(self.conv3(x)))
         x = x.view(x.size(0), -1)
         if compass is not None:
-            logging.debug(f"compass shape {compass.shape}")
-            logging.debug(f"x shape {x.shape}")
+            if len(compass.shape) < 2:
+                compass = compass.unsqueeze(1)
             x = torch.cat((x, compass), 1)
         x = self.head(x)
         if self.is_actor:
