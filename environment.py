@@ -13,7 +13,7 @@ class MyEnv(gym.Env):
         super(MyEnv, self).__init__()
         self.action_space = spaces.Discrete(10)
         self.observation_space = treechop_env.observation_space
-        self.env_name = "MineRLTreechop-v0"
+        self.env_name = "MineRLNavigateDense-v0"
 
     def step(self, a_idx):
         # return treechop_env.step(actions_arr[action])
