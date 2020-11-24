@@ -4,6 +4,8 @@ from torch.distributions import Categorical
 import gym
 import minerl
 import logging
+from network import ConvNet
+
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -14,25 +16,28 @@ def converter(observation):
     obs = observation['pov']
     obs = obs / 255
     H,W,C = obs.shape
-    state = torch.from_numpy(obs).float().to(device)
+    obs = torch.from_numpy(obs).float().to(device)
     # if len(state.shape) < 4:
     #         state = torch.unsqueeze(state, 0)
     # state = state.flatten()
-    state = state.reshape((C,H,W))
-    return state
+    obs = obs.reshape((C,H,W))
+    compass = torch.tensor([observation["compassAngle"]], device=device)
+    return obs, compass
 
 
 class Memory:
     def __init__(self):
         self.actions = []
-        self.states = []
+        self.observations = []
+        self.compassAngles = []
         self.logprobs = []
         self.rewards = []
         self.is_terminals = []
     
     def clear_memory(self):
         del self.actions[:]
-        del self.states[:]
+        del self.observations[:]
+        del self.compassAngles[:]
         del self.logprobs[:]
         del self.rewards[:]
         del self.is_terminals[:]
@@ -50,20 +55,21 @@ class ActorCritic(nn.Module):
         #         nn.Linear(n_latent_var, action_dim),
         #         nn.Softmax(dim=-1)
         #         )
-        self.action_layer = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=5, stride=2),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=5, stride=2),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.Conv2d(32, 32, kernel_size=5, stride=2),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(800,action_dim),
-            nn.Softmax(dim=-1)
-        )
+        # self.action_layer = nn.Sequential(
+        #     nn.Conv2d(3, 16, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(16),
+        #     nn.ReLU(),
+        #     nn.Conv2d(16, 32, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(32),
+        #     nn.ReLU(),
+        #     nn.Conv2d(32, 32, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(32),
+        #     nn.ReLU(),
+        #     nn.Flatten(),
+        #     nn.Linear(800,action_dim),
+        #     nn.Softmax(dim=-1)
+        # )
+        self.action_layer = ConvNet(64, 64, action_dim, True)
         # critic
         # self.value_layer = nn.Sequential(
         #         nn.Linear(state_dim, n_latent_var),
@@ -72,51 +78,53 @@ class ActorCritic(nn.Module):
         #         nn.Tanh(),
         #         nn.Linear(n_latent_var, 1)
         #         )
-        self.value_layer = nn.Sequential(
-            nn.Conv2d(3, 16, kernel_size=5, stride=2),
-            nn.BatchNorm2d(16),
-            nn.ReLU(),
-            nn.Conv2d(16, 32, kernel_size=5, stride=2),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.Conv2d(32, 32, kernel_size=5, stride=2),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-            nn.Flatten(),
-            nn.Linear(800, 1)
-        )
+        # self.value_layer = nn.Sequential(
+        #     nn.Conv2d(3, 16, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(16),
+        #     nn.ReLU(),
+        #     nn.Conv2d(16, 32, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(32),
+        #     nn.ReLU(),
+        #     nn.Conv2d(32, 32, kernel_size=5, stride=2),
+        #     nn.BatchNorm2d(32),
+        #     nn.ReLU(),
+        #     nn.Flatten(),
+        #     nn.Linear(800, 1)
+        # )
+        self.value_layer = ConvNet(64, 64, 1)
 
     def forward(self):
         raise NotImplementedError
         
-    def act(self, state, memory):
+    def act(self, obs, compass, memory):
         # state = torch.from_numpy(state).float().to(device)
-        if len(state.shape) < 4:
-            state = torch.unsqueeze(state, 0)
-        if len(state.shape) > 4:
-            state = torch.squeeze(state,1)
-        action_probs = self.action_layer(state)
+        if len(obs.shape) < 4:
+            obs = torch.unsqueeze(obs, 0)
+        if len(obs.shape) > 4:
+            obs = torch.squeeze(obs, 1)
+        action_probs = self.action_layer(obs, compass)
         dist = Categorical(action_probs)
         action = dist.sample()
-        
-        memory.states.append(state)
+
+        memory.compassAngles.append(compass)
+        memory.observations.append(obs)
         memory.actions.append(action)
         memory.logprobs.append(dist.log_prob(action))
         
         return action.item()
     
-    def evaluate(self, state, action):
-        if len(state.shape) < 4:
-            state = torch.unsqueeze(state, 0)
-        if len(state.shape) > 4:
-            state = torch.squeeze(state,1)
-        action_probs = self.action_layer(state)
+    def evaluate(self, obs, compass, action):
+        if len(obs.shape) < 4:
+            obs = torch.unsqueeze(obs, 0)
+        if len(obs.shape) > 4:
+            obs = torch.squeeze(obs, 1)
+        action_probs = self.action_layer(obs, compass)
         dist = Categorical(action_probs)
         
         action_logprobs = dist.log_prob(action)
         dist_entropy = dist.entropy()
         
-        state_value = self.value_layer(state)
+        state_value = self.value_layer(obs, compass)
         
         return action_logprobs, torch.squeeze(state_value), dist_entropy
         
@@ -150,14 +158,15 @@ class PPO:
         rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
         
         # convert list to tensor
-        old_states = torch.stack(memory.states).to(device).detach()
+        old_observations = torch.stack(memory.observations).to(device).detach()
+        old_compass = torch.stack(memory.compassAngles).to(device).detach()
         old_actions = torch.stack(memory.actions).to(device).detach()
         old_logprobs = torch.stack(memory.logprobs).to(device).detach()
         
         # Optimize policy for K epochs:
         for _ in range(self.K_epochs):
             # Evaluating old actions and values :
-            logprobs, state_values, dist_entropy = self.policy.evaluate(old_states, old_actions)
+            logprobs, state_values, dist_entropy = self.policy.evaluate(old_observations, old_compass, old_actions)
             
             # Finding the ratio (pi_theta / pi_theta__old):
             ratios = torch.exp(logprobs - old_logprobs.detach())
@@ -214,14 +223,14 @@ def main():
     
     # training loop
     for i_episode in range(1, max_episodes+1):
-        state = converter(env.reset())
+        obs, compass = converter(env.reset())
         for t in range(max_timesteps):
             timestep += 1
             
             # Running policy_old:
-            action = ppo.policy_old.act(state, memory)
+            action = ppo.policy_old.act(obs, compass, memory)
             state, reward, done, _ = env.step(action)
-            state = converter(state)
+            obs, compass = converter(state)
             # Saving reward and is_terminal:
             memory.rewards.append(reward)
             memory.is_terminals.append(done)
