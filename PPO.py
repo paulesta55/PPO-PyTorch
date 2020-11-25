@@ -245,8 +245,6 @@ def main():
             if timestep % update_timestep == 0:
                 ppo.update(memory)
                 memory.clear_memory()
-                timestep = 0
-            
             running_reward += reward
             if render:
                 env.render()
