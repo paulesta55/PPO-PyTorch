@@ -9,7 +9,7 @@ class MyEnv(gym.Env):
 
     def __init__(self):
         super(MyEnv, self).__init__()
-        self.action_space = spaces.Discrete(7)
+        self.action_space = spaces.Discrete(5)
         self.env_name = "MineRLNavigateDense-v0"
         self.env = gym.make(self.env_name)
         self.observation_space = self.env.observation_space
@@ -19,22 +19,22 @@ class MyEnv(gym.Env):
         # return treechop_env.step(actions_arr[action])
         a = self.env.action_space.noop()
         a["attack"] = 1
+        # if a_idx == 0:
+        #     # pitch + 5
+        #     a["camera"] = [5, 0]
+        # elif a_idx == 1:
+        #     # pitch -5
+        #     a["camera"] = [-5, 0]
         if a_idx == 0:
-            # pitch + 5
-            a["camera"] = [5, 0]
-        elif a_idx == 1:
-            # pitch -5
-            a["camera"] = [-5, 0]
-        elif a_idx == 2:
             # yaw +5
             a["camera"] = [0, 5]
-        elif a_idx == 3:
+        elif a_idx == 1:
             # yaw -5
             a["camera"] = [0, -5]
-        elif a_idx == 4:
+        elif a_idx == 2:
             # forward
             a["forward"] = 1
-        elif a_idx == 5:
+        elif a_idx == 3:
             # forward & jump
             a["forward"] = 1
             a["jump"] = 1
@@ -47,7 +47,7 @@ class MyEnv(gym.Env):
         # elif a_idx == 8:
         #     # back
         #     a["back"] = 1
-        elif a_idx == 6:
+        elif a_idx == 4:
             # jump
             a["jump"] = 1
         return self.env.step(a)

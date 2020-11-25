@@ -194,7 +194,7 @@ def main():
     # creating environment
     env = MyEnv()
     state_dim = 3* 64* 64
-    action_dim = 10
+    action_dim = 5
     render = False
     solved_reward = 200         # stop training if avg_reward > solved_reward. this is impossible
     log_interval = 1           # print avg reward in the interval
