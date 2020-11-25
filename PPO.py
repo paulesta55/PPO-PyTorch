@@ -252,7 +252,7 @@ def main():
                 env.render()
             if done:
                 break
-            logging.debug(f"instant reward {reward}")
+            logging.debug(f"instant reward {reward}, timestep {timestep}")
         episode_rewards.append(episode_reward)
         avg_length += t
 
