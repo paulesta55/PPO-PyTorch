@@ -1,5 +1,5 @@
 import gym
-from PPO import PPO, Memory
+from PPO import PPO, Memory, converter
 from PIL import Image
 import torch
 
@@ -41,13 +41,14 @@ def test():
         ep_reward = 0
         state = env.reset()
         for t in range(max_timesteps):
-            action = ppo.policy_old.act(state, memory)
+            action = ppo.policy_old.act( obs=obs, compass=compass, memory=memory)
             state, reward, done, _ = env.step(action)
             ep_reward += reward
             # if render:
             #     env.render()
+            obs, compass = converter(state)
             if save_gif:
-                 img = env.render(mode = 'rgb_array')
+                 img = obs.data.numpy()
                  img = Image.fromarray(img)
                  img.save('./gif/{}.jpg'.format(t))  
             if done:
