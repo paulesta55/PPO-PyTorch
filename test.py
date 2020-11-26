@@ -3,11 +3,15 @@ from PPO import PPO, Memory
 from PIL import Image
 import torch
 
+from environment import MyEnv
+
+
 def test():
     ############## Hyperparameters ##############
-    env_name = "LunarLander-v2"
+
     # creating environment
-    env = gym.make(env_name)
+    env = MyEnv()
+    env_name = env.env_name
     state_dim = env.observation_space.shape[0]
     action_dim = 4
     render = False
@@ -40,8 +44,8 @@ def test():
             action = ppo.policy_old.act(state, memory)
             state, reward, done, _ = env.step(action)
             ep_reward += reward
-            if render:
-                env.render()
+            # if render:
+            #     env.render()
             if save_gif:
                  img = env.render(mode = 'rgb_array')
                  img = Image.fromarray(img)

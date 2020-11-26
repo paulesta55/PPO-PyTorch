@@ -269,7 +269,7 @@ def main():
             avg_length = 0
 
         if i_episode % save_interval == 0:
-            torch.save(ppo.policy.state_dict(), './PPO_{}.pth'.format(env_name))
+            torch.save(ppo.policy.state_dict(), './PPO_{}_{}.pth'.format(env_name,i_episode))
             np.save('./PPO_ep_rewards_{}'.format(env_name), np.array(episode_rewards))
 if __name__ == '__main__':
     main()
