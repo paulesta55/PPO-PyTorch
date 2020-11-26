@@ -12,7 +12,7 @@ def test():
     # creating environment
     env = MyEnv()
     env_name = env.env_name
-    state_dim = env.observation_space.shape[0]
+    # state_dim = env.observation_space.shape[0]
     action_dim = 4
     render = False
     max_timesteps = 500
@@ -33,7 +33,7 @@ def test():
     directory = "./preTrained/"
     
     memory = Memory()
-    ppo = PPO(state_dim, action_dim, n_latent_var, lr, betas, gamma, K_epochs, eps_clip)
+    ppo = PPO(64*64*3, action_dim, n_latent_var, lr, betas, gamma, K_epochs, eps_clip)
     
     ppo.policy_old.load_state_dict(torch.load(directory+filename))
     
@@ -59,5 +59,3 @@ def test():
     
 if __name__ == '__main__':
     test()
-    
-    
