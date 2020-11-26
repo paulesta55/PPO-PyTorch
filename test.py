@@ -30,12 +30,12 @@ def test():
     save_gif = False
 
     filename = "PPO_{}.pth".format(env_name)
-    directory = "./preTrained/"
+    # directory = "./preTrained/"
     
     memory = Memory()
     ppo = PPO(64*64*3, action_dim, n_latent_var, lr, betas, gamma, K_epochs, eps_clip)
     
-    ppo.policy_old.load_state_dict(torch.load(directory+filename))
+    ppo.policy_old.load_state_dict(torch.load(filename))
     
     for ep in range(1, n_episodes+1):
         ep_reward = 0
