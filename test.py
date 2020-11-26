@@ -25,7 +25,7 @@ def test():
     #############################################
 
     n_episodes = 3
-    max_timesteps = 300
+    max_timesteps = 10000
     render = True
     save_gif = False
 
@@ -55,8 +55,6 @@ def test():
                 break
             
         print('Episode: {}\tReward: {}'.format(ep, int(ep_reward)))
-        ep_reward = 0
-        env.close()
     
 if __name__ == '__main__':
     test()
