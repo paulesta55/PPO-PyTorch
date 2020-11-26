@@ -41,12 +41,12 @@ def test():
         ep_reward = 0
         state = env.reset()
         for t in range(max_timesteps):
+            obs, compass = converter(state)
             action = ppo.policy_old.act( obs=obs, compass=compass, memory=memory)
             state, reward, done, _ = env.step(action)
             ep_reward += reward
             # if render:
             #     env.render()
-            obs, compass = converter(state)
             if save_gif:
                  img = obs.data.numpy()
                  img = Image.fromarray(img)
