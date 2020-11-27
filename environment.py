@@ -25,7 +25,7 @@ class MyEnv(gym.Env):
         elif a_idx == 1:
             # pitch -5
             a["camera"] = [-5, 0]
-        if a_idx == 2:
+        elif a_idx == 2:
             # yaw +5
             a["camera"] = [0, 5]
         elif a_idx == 3:

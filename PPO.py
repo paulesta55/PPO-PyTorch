@@ -206,7 +206,7 @@ def main():
     betas = (0.9, 0.999)
     gamma = 0.99                # discount factor
     K_epochs = 4                # update policy for K epochs
-    eps_clip = 0.2              # clip parameter for PPO
+    eps_clip = 0.1              # clip parameter for PPO
     random_seed = None
     save_interval = 5
     #############################################
