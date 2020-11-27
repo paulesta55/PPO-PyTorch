@@ -194,7 +194,7 @@ def main():
     # creating environment
     env = MyEnv()
     state_dim = 3* 64* 64
-    action_dim = 5
+    action_dim = 7
     render = False
     solved_reward = 200         # stop training if avg_reward > solved_reward. this is impossible
     log_interval = 1           # print avg reward in the interval
@@ -256,7 +256,7 @@ def main():
 
         # stop training if avg_reward > solved_reward
         if running_reward > (log_interval*solved_reward):
-            print("########## Solved! ##########")
+            logging.info("########## Solved! ##########")
             torch.save(ppo.policy.state_dict(), './PPO_{}.pth'.format(env_name))
             break
             
@@ -264,13 +264,13 @@ def main():
         if i_episode % log_interval == 0:
             avg_length = int(avg_length/log_interval)
             running_reward = int((running_reward/log_interval))
-            print('Episode {} \t avg length: {} \t reward: {}'.format(i_episode, avg_length, running_reward))
+            logging.debug('Episode {} \t avg length: {} \t reward: {}'.format(i_episode, avg_length, running_reward))
             running_reward = 0
             avg_length = 0
 
         if i_episode % save_interval == 0:
-            torch.save(ppo.policy.state_dict(), './PPO_{}_{}.pth'.format(env_name,i_episode))
-            np.save('./PPO_ep_rewards_{}'.format(env_name), np.array(episode_rewards))
+            torch.save(ppo.policy.state_dict(), './PPO_{}_{}.pth'.format(env_name, i_episode))
+            np.save('./PPO_ep_rewards_{}_{}'.format(env_name, i_episode), np.array(episode_rewards))
 if __name__ == '__main__':
     main()
     

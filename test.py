@@ -13,7 +13,7 @@ def test():
     env = MyEnv()
     env_name = env.env_name
     # state_dim = env.observation_space.shape[0]
-    action_dim = 5
+    action_dim = 7
     render = False
     max_timesteps = 500
     n_latent_var = 64           # number of variables in hidden layer
