@@ -29,7 +29,7 @@ def test():
     render = True
     save_gif = False
 
-    filename = "PPO_{}.pth".format(env_name)
+    filename = "PPO_{}_95.pth".format(env_name)
     # directory = "./preTrained/"
     
     memory = Memory()
