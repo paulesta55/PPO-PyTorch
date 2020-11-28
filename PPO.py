@@ -194,14 +194,14 @@ def main():
     # creating environment
     env = MyEnv()
     state_dim = 3* 64* 64
-    action_dim = 7
+    action_dim = 5
     render = False
     solved_reward = 200         # stop training if avg_reward > solved_reward. this is impossible
     log_interval = 1           # print avg reward in the interval
     max_episodes = 50000        # max training episodes
     max_timesteps = 10000         # max timesteps in one episode
     n_latent_var = 64           # number of variables in hidden layer
-    update_timestep = 128*8      # update policy every n timesteps
+    update_timestep = 1024      # update policy every n timesteps
     lr = 0.00025
     betas = (0.9, 0.999)
     gamma = 0.99                # discount factor

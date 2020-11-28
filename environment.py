@@ -19,6 +19,7 @@ class MyEnv(gym.Env):
         # return treechop_env.step(actions_arr[action])
         a = self.env.action_space.noop()
         a["attack"] = 1
+        a["forward"] = 1
         if a_idx == 0:
             # pitch + 5
             a["camera"] = [5, 0]
@@ -31,13 +32,13 @@ class MyEnv(gym.Env):
         elif a_idx == 3:
             # yaw -5
             a["camera"] = [0, -5]
-        elif a_idx == 4:
-            # forward
-            a["forward"] = 1
-        elif a_idx == 5:
-            # forward & jump
-            a["forward"] = 1
-            a["jump"] = 1
+        # elif a_idx == 4:
+        #     # forward
+        #     a["forward"] = 1
+        # elif a_idx == 5:
+        #     # forward & jump
+        #     a["forward"] = 1
+        #     a["jump"] = 1
         # elif a_idx == 6:
         #     # left
         #     a["left"] = 1
@@ -47,7 +48,7 @@ class MyEnv(gym.Env):
         # elif a_idx == 8:
         #     # back
         #     a["back"] = 1
-        elif a_idx == 6:
+        elif a_idx == 4:
             # jump
             a["jump"] = 1
         return self.env.step(a)
