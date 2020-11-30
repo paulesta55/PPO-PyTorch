@@ -1,4 +1,5 @@
 import gym
+import logging
 from PPO import PPO, Memory, converter
 from PIL import Image
 import torch
@@ -29,7 +30,7 @@ def test():
     render = True
     save_gif = False
 
-    filename = "PPO_{}_95.pth".format(env_name)
+    filename = "PPO_{}_265.pth".format(env_name)
     # directory = "./preTrained/"
     
     memory = Memory()
@@ -54,7 +55,7 @@ def test():
             if done:
                 break
             
-        print('Episode: {}\tReward: {}'.format(ep, int(ep_reward)))
+        logging.debug('Episode: {}\tReward: {}'.format(ep, int(ep_reward)))
     
 if __name__ == '__main__':
     test()
