@@ -1,5 +1,5 @@
 # PPO-PyTorch
-Minimal PyTorch implementation of Proximal Policy Optimization with clipped objective for OpenAI gym environments.
+Minimal PyTorch implementation of Proximal Policy Optimization with clipped objective for MineRLNavigateDense-v0 environment.
 
 ## Usage
 
