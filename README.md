@@ -3,7 +3,7 @@ Minimal PyTorch implementation of Proximal Policy Optimization with clipped obje
 
 ## Usage
 
-- To test a preTrained network : run `test.py` or `test_continuous.py`
+- To test a preTrained network : run `test.py`
 - To train a new network : run `PPO.py`
 - All the hyperparameters are in the `PPO.py` file
 
