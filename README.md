@@ -20,4 +20,4 @@ minerl 0.3.0
 
 ## Results
 
-PPO MineRLNavigateDense-v0 train1 (120 episodes)           |  PPO MineRLNavigateDense-v0 train2 (4000 episodes)
+PPO MineRLNavigateDense-v0 train1 (120 episodes)           |  PPO MineRLNavigateDense-v0 train2 (265 episodes)
