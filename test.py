@@ -3,6 +3,7 @@ import logging
 from PPO import PPO, Memory, converter
 from PIL import Image
 import torch
+import numpy as np
 
 from environment import MyEnv
 
@@ -13,10 +14,7 @@ def test():
     # creating environment
     env = MyEnv()
     env_name = env.env_name
-    # state_dim = env.observation_space.shape[0]
     action_dim = 5
-    render = False
-    max_timesteps = 500
     n_latent_var = 64           # number of variables in hidden layer
     lr = 0.0007
     betas = (0.9, 0.999)
@@ -25,9 +23,8 @@ def test():
     eps_clip = 0.2              # clip parameter for PPO
     #############################################
 
-    n_episodes = 3
-    max_timesteps = 10000
-    render = True
+    n_episodes = 100
+    max_timesteps = 5000
     save_gif = False
 
     filename = "PPO_{}_265.pth".format(env_name)
@@ -37,7 +34,7 @@ def test():
     ppo = PPO(64*64*3, action_dim, n_latent_var, lr, betas, gamma, K_epochs, eps_clip)
     
     ppo.policy_old.load_state_dict(torch.load(filename))
-    
+    rewards = []
     for ep in range(1, n_episodes+1):
         ep_reward = 0
         state = env.reset()
@@ -54,8 +51,8 @@ def test():
                  img.save('./gif/{}.jpg'.format(t))  
             if done:
                 break
-            
+        rewards.append(ep_reward)
         logging.debug('Episode: {}\tReward: {}'.format(ep, int(ep_reward)))
-    
+    np.save('./PPO_ep_rewards_test_{}'.format(env_name), np.array(rewards))
 if __name__ == '__main__':
     test()
