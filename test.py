@@ -27,8 +27,7 @@ def test():
     max_timesteps = 5000
     save_gif = False
 
-    filename = "PPO_{}_265.pth".format(env_name)
-    # directory = "./preTrained/"
+    filename = "./preTrained/PPO_{}_train2.pth".format(env_name)
     
     memory = Memory()
     ppo = PPO(64*64*3, action_dim, n_latent_var, lr, betas, gamma, K_epochs, eps_clip)
